@@ -1,6 +1,16 @@
-# Netlyzer — Network Protocol Analyzer
+<div align="center">
 
-A CLI-based network packet analyzer built with Python and Scapy. Supports live traffic capture, offline PCAP analysis, protocol detection, passive host discovery, VLAN segment scanning, and real-time security alerting.
+# NETLYZER — Network Protocol Analyzer
+
+![Python](https://img.shields.io/badge/Python-3.8+-blue)
+![Build](https://img.shields.io/badge/Build-Stable-brightgreen)
+![Version](https://img.shields.io/badge/Version-1.0-red)
+
+<br>
+
+<img src="assets/netlyzer.png" width="800"/>
+
+</div>
 
 ---
 
@@ -222,13 +232,3 @@ netlyzer/
 ```
 
 ---
-
-## License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
----
-
-## Disclaimer
-
-Netlyzer is intended for authorized network analysis, penetration testing, and educational use only. Always obtain proper permission before capturing traffic on any network you do not own. The authors are not responsible for any misuse.
