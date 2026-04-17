@@ -198,28 +198,6 @@ netlyzer --input capture.pcap -vv
 
 ---
 
-## Security Alerts
-
-Netlyzer automatically detects and alerts on the following network threats in real time:
-
-| Alert | Risk | Suggested Tool |
-|---|---|---|
-| STP frame | Root bridge hijack / partial MITM | Yersinia, Scapy |
-| OSPF packet | Routing table manipulation | Loki, FRRouting |
-| HSRP packet | Active router takeover / MITM | Loki, Yersinia |
-| VRRP packet | Master takeover / MITM | Scapy, Loki |
-| LLMNR query | Credential theft via poisoning | Responder |
-| mDNS query | Credential theft / host enumeration | Responder |
-| NBT-NS query | Credential theft via poisoning | Responder |
-| DHCP packet | DHCP starvation / rogue server | Yersinia, DHCPig |
-| CDP frame | Topology leakage / CDP flood | Yersinia |
-| 802.1Q VLAN tag | VLAN hopping if DTP enabled | Yersinia |
-| SSDP / UPnP | UPnP exploitation / enumeration | Miranda |
-
-Each alert includes the detected sender, potential impact, and a mitigation recommendation.
-
----
-
 ## Project Structure
 
 ```
