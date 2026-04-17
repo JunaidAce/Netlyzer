@@ -45,7 +45,7 @@ pip install -r requirements.txt
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/netlyzer.git
+git clone https://github.com/junaidace/netlyzer.git
 cd netlyzer
 
 # Install dependencies
