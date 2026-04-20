@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Netlyzer - Network Protocol Analyzer
-CLI packet analysis tool
+Cli Based Packet Analysis tool
 """
 
 import argparse
