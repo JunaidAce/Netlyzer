@@ -32,7 +32,6 @@ sys.stdout.reconfigure(line_buffering=True)
 
 # ──────────────────────────────────────────
 #  Color Palette
-# ──────────────────────────────────────────
 
 R  = Style.RESET_ALL
 B  = Style.BRIGHT
@@ -88,7 +87,6 @@ PROTO_COLOR = {
 
 # ──────────────────────────────────────────
 #  Banner
-# ──────────────────────────────────────────
 
 def banner():
     print(fr"""
