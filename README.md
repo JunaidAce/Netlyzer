@@ -207,6 +207,8 @@ netlyzer/
 ├── .gitignore         # Git ignore rules
 ├── LICENSE            # MIT License
 └── README.md          # This file
+/──assets              #any pictures
+
 ```
 
 ---
