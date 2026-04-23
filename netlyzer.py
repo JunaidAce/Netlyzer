@@ -409,9 +409,8 @@ def _vlan_table(vlan_ids, iface):
         print(f"  {C_VLAN}{vid:<10}{R} {Fore.YELLOW}{cnt:<8}{R} sudo vconfig add {iface} {vid}")
 
 
-# ──────────────────────────────────────────
-#  Main Analyzer
-# ──────────────────────────────────────────
+# -----──────────----
+#  --Main Analyzer--
 
 class Netlyzer:
 
@@ -520,7 +519,7 @@ class Netlyzer:
 
         return f"{C_DIM}{ts}{R}  {TAG_OUT} {color}{proto}{R}{vlan_tag}"
 
-    # ── Packet handler ───────────────────────
+    # ---- It Handles the packet ------
 
     def handle(self, packet):
         if self._stop_time and time.time() >= self._stop_time:
