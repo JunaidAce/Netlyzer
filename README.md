@@ -84,7 +84,7 @@ sudo netlyzer [OPTIONS]
 
 ---
 
-## All Commands
+## UsefullCommands
 
 ### Interface
 
@@ -197,17 +197,6 @@ netlyzer --input capture.pcap -vv
 | `--search-vlan` | 802.1Q VLAN segment discovery mode |
 
 ---
-
-## Project Structure
-
-```
-netlyzer/
-├── netlyzer.py        # Main script
-├── requirements.txt   # Python dependencies
-├── .gitignore         # Git ignore rules
-├── LICENSE            # MIT License
-└── README.md          # This file
-/──assets              #any pictures
 
 ```
 
