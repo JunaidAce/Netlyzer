@@ -2,7 +2,7 @@
 
 # NETLYZER — Network Protocol Analyzer
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue)
+![Python](https://img.shields.io/badge/Python-3.8-blue)
 ![Build](https://img.shields.io/badge/Build-Stable-brightgreen)
 ![Version](https://img.shields.io/badge/Version-1.0-red)
 
