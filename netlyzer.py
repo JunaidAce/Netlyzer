@@ -35,7 +35,7 @@ sys.stdout.reconfigure(line_buffering=True)
 
 R  = Style.RESET_ALL
 B  = Style.BRIGHT
-
+# ──────────────────────────────────────────
 C_TCP   = Fore.CYAN
 C_UDP   = Fore.GREEN
 C_ICMP  = Fore.YELLOW
@@ -47,7 +47,7 @@ C_SSH   = Fore.LIGHTBLUE_EX
 C_DHCP  = Fore.LIGHTGREEN_EX
 C_VLAN  = Fore.LIGHTMAGENTA_EX
 C_OTHER = Fore.RED
-
+# ──────────────────────────────────────────
 C_SRC   = Fore.GREEN
 C_DST   = Fore.RED
 C_HEAD  = Fore.CYAN  + B
@@ -64,14 +64,14 @@ TAG_ALERT = f"{C_ALERT}[!]{R}"  # security alert / error
 TAG_RESP  = f"{C_WARN}[=]{R}"   # response / reply data
 TAG_DATA  = f"{C_DST}[>]{R}"    # raw data / payload
 TAG_OUT   = f"{C_DIM}[-]{R}"    # outbound / minor info
-
+# ──────────────────────────────────────────
 # TCP flag map
 TCP_FLAGS = {
     'F': 'FIN', 'S': 'SYN', 'R': 'RST',
     'P': 'PSH', 'A': 'ACK', 'U': 'URG',
     'E': 'ECE', 'C': 'CWR'
 }
-
+# ──────────────────────────────────────────
 PROTO_COLOR = {
     "TCP":      C_TCP,
     "UDP":      C_UDP,
