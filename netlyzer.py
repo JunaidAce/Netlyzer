@@ -47,7 +47,7 @@ C_SSH   = Fore.LIGHTBLUE_EX
 C_DHCP  = Fore.LIGHTGREEN_EX
 C_VLAN  = Fore.LIGHTMAGENTA_EX
 C_OTHER = Fore.RED
-# ──────────────────────────────────────────
+
 C_SRC   = Fore.GREEN
 C_DST   = Fore.RED
 C_HEAD  = Fore.CYAN  + B
@@ -186,7 +186,7 @@ class PacketStats:
 
         if packet.haslayer(Dot1Q):
             self.vlan_ids[packet[Dot1Q].vlan] += 1
-
+# ──────────────────────────────────────────
     def print_summary(self):
         dur = (datetime.now() - self.start_time).total_seconds()
         section("CAPTURE SUMMARY")
@@ -197,24 +197,24 @@ class PacketStats:
         if self.packet_sizes:
             avg = sum(self.packet_sizes) / len(self.packet_sizes)
             log_info(f"Avg Pkt Size   : {Fore.YELLOW}{avg:.0f} bytes{R}")
-
+# ──────────────────────────────────────────
         section("PROTOCOL BREAKDOWN")
         for proto, cnt in sorted(self.protocol_counts.items(), key=lambda x: -x[1]):
             color = PROTO_COLOR.get(proto, C_OTHER)
             print(f"    {color}{proto:<10}{R}  {Fore.YELLOW}{cnt:>5}{R}")
-
+# ──────────────────────────────────────────
         if self.port_counts:
             section("TOP DESTINATION PORTS")
             for port, cnt in sorted(self.port_counts.items(), key=lambda x: -x[1])[:10]:
                 log_out(f"Port {Fore.CYAN}{port:<6}{R}  {Fore.YELLOW}{cnt}{R} packets")
-
+# ──────────────────────────────────────────
         if self.arp_hosts:
             section(f"ARP HOSTS DISCOVERED  ({len(self.arp_hosts)})")
             print(f"    {C_HEAD}{'IP Address':<20} {'MAC Address':<20} Type{R}")
             print(f"    {'─'*18}  {'─'*18}  {'─'*12}")
             for ip, info in sorted(self.arp_hosts.items()):
                 print(f"    {C_SRC}{ip:<20}{R} {Fore.CYAN}{info['mac']:<20}{R} {C_DIM}{info['type']}{R}")
-
+# ──────────────────────────────────────────
         if self.vlan_ids:
             section(f"VLAN SEGMENTS  ({len(self.vlan_ids)})")
             print(f"    {C_HEAD}{'VLAN ID':<10} {'Frames':<8} How to Join{R}")
