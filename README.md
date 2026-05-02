@@ -195,9 +195,6 @@ netlyzer --input capture.pcap -vv
 | `--input` | Read and analyze an existing `.pcap` file |
 | `--passive-arp` | Passive ARP host discovery mode |
 | `--search-vlan` | 802.1Q VLAN segment discovery mode |
-
----
-
 ```
 
 ---
