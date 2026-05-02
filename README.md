@@ -15,7 +15,7 @@
 ---
 
 ## Features
-
+# ──────────────────────────────────────────
 - **Live packet capture** on any network interface
 - **Offline PCAP analysis** (cold mode) — no interface needed
 - **Protocol detection** — TCP, UDP, ICMP, DNS, HTTP, ARP, FTP, SSH/SFTP, DHCP
@@ -27,7 +27,7 @@
 - **Traffic statistics** — protocol breakdown, top ports, packet rate, avg size
 - **Timed capture** — auto-stop after N seconds
 - **BPF filter support** — raw or composed filter strings
-
+# ──────────────────────────────────────────
 ---
 
 ## Requirements
