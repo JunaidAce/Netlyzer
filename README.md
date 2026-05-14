@@ -165,13 +165,13 @@ sudo netlyzer -i eth0 --search-vlan
 ### Combined Examples
 
 ```bash
-# Capture 200 TCP packets, save to file, stop after 60 seconds
+# Capture 200 TCP packets, save to file, stop after 60 seconds !!
 sudo netlyzer -i eth0 -p tcp -c 200 -w output.pcap --timer 60
 
-# Passive ARP scan on wlan0
+# Passive ARP scan on wlan0 !!
 sudo netlyzer -i wlan0 --passive-arp
 
-# Analyze a captured file and show full dumps
+# Analyze a captured file !!
 netlyzer --input capture.pcap -vv
 ```
 
