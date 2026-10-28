@@ -32,7 +32,7 @@
 
 -----Python 3.8+-----
 -----Linux or macOS-----
-- The following Python packages:
+-----The following Python packages-----
 
 ```
 scapy
