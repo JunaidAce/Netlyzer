@@ -31,7 +31,7 @@
 ## Requirements
 
 -----Python 3.8+-----
-- Linux or macOS (raw socket capture requires root)
+-----Linux or macOS-----
 - The following Python packages:
 
 ```
