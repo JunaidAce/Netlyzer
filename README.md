@@ -30,7 +30,7 @@
 
 ## Requirements
 
-- Python 3.8+
+-----Python 3.8+-----
 - Linux or macOS (raw socket capture requires root)
 - The following Python packages:
 
