@@ -6,7 +6,12 @@ from collections import Counter
 import json
 from pathlib import Path
 
-from scapy.all import ARP, DNS, DNSQR, ICMP, IP, TCP, UDP, PcapReader
+from scapy.all import ARP, DNS, DNSQR, ICMP, IP, IPv6, TCP, UDP, PcapReader
+
+
+def _endpoint(address, port, is_ipv6):
+    """Format an address/port pair without ambiguity for IPv6."""
+    return f"[{address}]:{port}" if is_ipv6 else f"{address}:{port}"
 
 
 def analyze(path):
@@ -15,9 +20,12 @@ def analyze(path):
         "file": str(path),
         "packets": 0,
         "bytes": 0,
+        "min_packet_bytes": None,
+        "max_packet_bytes": 0,
         "protocols": Counter(),
         "hosts": Counter(),
         "destination_ports": Counter(),
+        "conversations": Counter(),
         "dns_queries": Counter(),
         "first_packet_time": None,
         "last_packet_time": None,
@@ -26,8 +34,15 @@ def analyze(path):
     reader = PcapReader(str(path))
     try:
         for packet in reader:
+            packet_size = len(packet)
             report["packets"] += 1
-            report["bytes"] += len(packet)
+            report["bytes"] += packet_size
+            report["min_packet_bytes"] = (
+                packet_size if report["min_packet_bytes"] is None
+                else min(report["min_packet_bytes"], packet_size)
+            )
+            report["max_packet_bytes"] = max(report["max_packet_bytes"], packet_size)
+
             timestamp = float(packet.time)
             if report["first_packet_time"] is None:
                 report["first_packet_time"] = timestamp
@@ -51,11 +66,39 @@ def analyze(path):
                 ip = packet[IP]
                 report["hosts"][ip.src] += 1
                 report["hosts"][ip.dst] += 1
+            elif packet.haslayer(IPv6):
+                ip = packet[IPv6]
+                report["hosts"][ip.src] += 1
+                report["hosts"][ip.dst] += 1
 
+            transport = None
             if packet.haslayer(TCP):
-                report["destination_ports"][str(packet[TCP].dport)] += 1
+                transport = packet[TCP]
+                transport_name = "TCP"
             elif packet.haslayer(UDP):
-                report["destination_ports"][str(packet[UDP].dport)] += 1
+                transport = packet[UDP]
+                transport_name = "UDP"
+
+            if transport is not None:
+                source_port = transport.sport
+                destination_port = transport.dport
+                report["destination_ports"][str(destination_port)] += 1
+                if packet.haslayer(IP):
+                    source, destination = packet[IP].src, packet[IP].dst
+                    is_ipv6 = False
+                elif packet.haslayer(IPv6):
+                    source, destination = packet[IPv6].src, packet[IPv6].dst
+                    is_ipv6 = True
+                else:
+                    source = destination = None
+                    is_ipv6 = False
+
+                if source is not None:
+                    first = (_endpoint(source, source_port, is_ipv6), source, source_port)
+                    second = (_endpoint(destination, destination_port, is_ipv6), destination, destination_port)
+                    left, right = sorted((first, second))
+                    label = f"{transport_name} {left[0]} ↔ {right[0]}"
+                    report["conversations"][label] += 1
 
             if packet.haslayer(DNS) and packet[DNS].qr == 0 and packet[DNS].qd:
                 query = packet[DNS].qd
@@ -69,6 +112,9 @@ def analyze(path):
     first = report["first_packet_time"]
     last = report["last_packet_time"]
     report["duration_seconds"] = max(0.0, last - first) if first is not None else 0.0
+    report["average_packet_bytes"] = (
+        report["bytes"] / report["packets"] if report["packets"] else 0.0
+    )
     return report
 
 
@@ -85,16 +131,22 @@ def serializable_report(report, limit):
         "packets": report["packets"],
         "bytes": report["bytes"],
         "duration_seconds": round(report["duration_seconds"], 6),
+        "packet_size_bytes": {
+            "min": report["min_packet_bytes"],
+            "max": report["max_packet_bytes"] if report["packets"] else None,
+            "average": round(report["average_packet_bytes"], 2),
+        },
         "protocols": dict(report["protocols"].most_common()),
         "top_talkers": ranked(report["hosts"], limit),
         "top_destination_ports": ranked(report["destination_ports"], limit),
+        "top_conversations": ranked(report["conversations"], limit),
         "top_dns_queries": ranked(report["dns_queries"], limit),
     }
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Summarize a PCAP: top talkers, DNS queries, and JSON export."
+        description="Summarize a PCAP: top talkers, conversations, DNS queries, and JSON export."
     )
     parser.add_argument("pcap", type=Path, help="PCAP/PCAPNG file to analyze")
     parser.add_argument(
@@ -119,11 +171,16 @@ def main():
     print(f"PCAP report: {result['file']}")
     print(f"Packets: {result['packets']}  Bytes: {result['bytes']}  "
           f"Duration: {result['duration_seconds']:.3f}s")
+    sizes = result["packet_size_bytes"]
+    if sizes["min"] is not None:
+        print(f"Packet sizes: min {sizes['min']} B, max {sizes['max']} B, "
+              f"average {sizes['average']} B")
 
     for title, key in (
         ("Protocols", "protocols"),
-        ("Top talkers (IP packet appearances)", "top_talkers"),
+        ("Top talkers (IPv4/IPv6 packet appearances)", "top_talkers"),
         ("Top destination ports", "top_destination_ports"),
+        ("Top conversations (TCP/UDP)", "top_conversations"),
         ("Top DNS queries", "top_dns_queries"),
     ):
         print(f"\n{title}:")
@@ -135,7 +192,7 @@ def main():
                 print(f"  {name:<10} {count}")
         else:
             for entry in values:
-                print(f"  {entry['name']:<40} {entry['packets']}")
+                print(f"  {entry['name']:<60} {entry['packets']}")
 
     if args.json_path:
         try:
