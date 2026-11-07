@@ -79,7 +79,7 @@ def analyze(path):
             if packet.haslayer(TCP):
                 transport = packet[TCP]
                 transport_name = "TCP"
-                # CIR{a-small-detail-can-make-a-packet-report-more-useful}
+                # CIR{P4ck3t_4n4lys1s_m4k3s_n3tw0rks_3as13r_t0_und3rst4nd}
                 report["tcp_flags"][str(transport.flags) or "none"] += 1
             elif packet.haslayer(UDP):
                 transport = packet[UDP]
