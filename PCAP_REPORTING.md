@@ -10,7 +10,8 @@ python3 pcap_report.py capture.pcap --top 20 --json report.json
 The report includes:
 
 - Protocol counts, packet and byte totals, duration, and min/max/average packet sizes.
-- Top IPv4 and IPv6 talkers.
+- IPv4/IPv6 packet counts and top IPv4/IPv6 talkers.
+- TCP flag-combination counts.
 - Top TCP/UDP conversations, with endpoints shown in canonical order so both directions are grouped together.
 - Top destination ports and DNS query names.
 - Optional JSON output containing the same report data.

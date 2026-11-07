@@ -23,6 +23,8 @@ def analyze(path):
         "min_packet_bytes": None,
         "max_packet_bytes": 0,
         "protocols": Counter(),
+        "ip_versions": Counter(),
+        "tcp_flags": Counter(),
         "hosts": Counter(),
         "destination_ports": Counter(),
         "conversations": Counter(),
@@ -64,10 +66,12 @@ def analyze(path):
 
             if packet.haslayer(IP):
                 ip = packet[IP]
+                report["ip_versions"]["IPv4"] += 1
                 report["hosts"][ip.src] += 1
                 report["hosts"][ip.dst] += 1
             elif packet.haslayer(IPv6):
                 ip = packet[IPv6]
+                report["ip_versions"]["IPv6"] += 1
                 report["hosts"][ip.src] += 1
                 report["hosts"][ip.dst] += 1
 
@@ -75,6 +79,8 @@ def analyze(path):
             if packet.haslayer(TCP):
                 transport = packet[TCP]
                 transport_name = "TCP"
+                # CIR{a-small-detail-can-make-a-packet-report-more-useful}
+                report["tcp_flags"][str(transport.flags) or "none"] += 1
             elif packet.haslayer(UDP):
                 transport = packet[UDP]
                 transport_name = "UDP"
@@ -137,6 +143,8 @@ def serializable_report(report, limit):
             "average": round(report["average_packet_bytes"], 2),
         },
         "protocols": dict(report["protocols"].most_common()),
+        "ip_versions": dict(report["ip_versions"].most_common()),
+        "tcp_flags": dict(report["tcp_flags"].most_common()),
         "top_talkers": ranked(report["hosts"], limit),
         "top_destination_ports": ranked(report["destination_ports"], limit),
         "top_conversations": ranked(report["conversations"], limit),
@@ -146,7 +154,7 @@ def serializable_report(report, limit):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Summarize a PCAP: top talkers, conversations, DNS queries, and JSON export."
+        description="Summarize a PCAP: talkers, conversations, DNS queries, and JSON export."
     )
     parser.add_argument("pcap", type=Path, help="PCAP/PCAPNG file to analyze")
     parser.add_argument(
@@ -178,6 +186,8 @@ def main():
 
     for title, key in (
         ("Protocols", "protocols"),
+        ("IP versions", "ip_versions"),
+        ("TCP flag combinations", "tcp_flags"),
         ("Top talkers (IPv4/IPv6 packet appearances)", "top_talkers"),
         ("Top destination ports", "top_destination_ports"),
         ("Top conversations (TCP/UDP)", "top_conversations"),
@@ -187,7 +197,7 @@ def main():
         values = result[key]
         if not values:
             print("  (none)")
-        elif key == "protocols":
+        elif key in ("protocols", "ip_versions", "tcp_flags"):
             for name, count in values.items():
                 print(f"  {name:<10} {count}")
         else:
